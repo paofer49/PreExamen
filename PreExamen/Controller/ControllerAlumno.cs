@@ -54,9 +54,23 @@ namespace PreExamen.Controller
             }
         }
 
-        public bool InsertarAlumnos(string nombre, string apellido, string fechanac, string correo)
+        public bool InsertarAlumnos(int id,string nombre, string apellido, string fechanac, string correo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                a.NombreAlumno = nombre;
+                a.ApellidoAlumno = apellido;
+                a.FechaNacimiento = fechanac;
+                a.Correo = correo;
+                a.idAlumno = id;
+                listaalumno.Add(new Alumno(a.idAlumno,a.NombreAlumno, a.ApellidoAlumno, a.FechaNacimiento, a.Correo));
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<Alumno> MostrarAlumnos()
