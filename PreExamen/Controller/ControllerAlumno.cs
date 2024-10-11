@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data;
+using PreExamen.Model.DataSet1TableAdapters;
 
 namespace PreExamen.Controller
 {
@@ -15,15 +17,11 @@ namespace PreExamen.Controller
         {
             try
             {
-                var actualoizarobj = listaalumno.FirstOrDefault(x => x.idAlumno == idalumno);
-                if (actualoizarobj != null)
+                using (alumnosTableAdapter alumnos = new alumnosTableAdapter())
                 {
-                    actualoizarobj.NombreAlumno = nombre;
-                    actualoizarobj.ApellidoAlumno = apellido;
-                    actualoizarobj.FechaNacimiento = fechanac;
-                    actualoizarobj.Correo = correo;
+                    alumnos.UpdateAlumno(nombre, apellido, fechanac, correo, idalumno);
+                    return true;
                 }
-                return true;
             }
             catch (Exception)
             {
@@ -36,15 +34,10 @@ namespace PreExamen.Controller
         {
             try
             {
-                var eliminarobj = listaalumno.FirstOrDefault(x => x.idAlumno == idalumno);
-                if (eliminarobj != null)
+                using (alumnosTableAdapter alumnos = new alumnosTableAdapter())
                 {
-                    listaalumno.Remove(eliminarobj);
+                    alumnos.DeleteAlumno(idalumno);
                     return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
             catch (Exception)
@@ -56,12 +49,46 @@ namespace PreExamen.Controller
 
         public bool InsertarAlumnos(string nombre, string apellido, string fechanac, string correo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (alumnosTableAdapter alumnos = new alumnosTableAdapter())
+                {
+                    alumnos.InsertAlumno(nombre, apellido, fechanac, correo);
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<Alumno> MostrarAlumnos()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (alumnosTableAdapter alumnos = new alumnosTableAdapter())
+                {
+                    var datos = alumnos.GetData();
+                    foreach (DataRow row in datos)
+                    {
+                        a.idAlumno = Convert.ToInt32(row["AlumnoID"]);
+                        a.NombreAlumno = Convert.ToString(row["Nombre"]);
+                        a.ApellidoAlumno = Convert.ToString(row["Apellido"]);
+                        a.FechaNacimiento = Convert.ToString(row["FechaNacimiento"]);
+                        a.Correo = Convert.ToString(row["Correo"]);
+                        listaalumno.Add(new Alumno(a.idAlumno, a.NombreAlumno, a.ApellidoAlumno, a.FechaNacimiento, a.Correo));
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return listaalumno;
         }
     }
 }
